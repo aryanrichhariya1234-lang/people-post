@@ -9,8 +9,8 @@ RUN go mod download
 # Copy full code
 COPY . .
 
-# Build binary
-RUN go build -o main ./cmd/server
+# Build binary (FIX: disable VCS stamping)
+RUN go build -buildvcs=false -o main ./cmd/server
 
 # Expose your backend port
 EXPOSE 3000
