@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
 "github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"peoplepost/internal/cache"
 	"peoplepost/internal/config"
@@ -152,9 +153,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	})
 }
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
-
-	// 🔥 1. Try cache (safe even if Redis not connected)
 	var cached []bson.M
+
+	// 🔹 Try cache (safe even if Redis is down)
 	if err := cache.Get("posts", &cached); err == nil && len(cached) > 0 {
 		utils.JSON(w, http.StatusOK, map[string]interface{}{
 			"status": "success",
@@ -163,7 +164,7 @@ func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 🔥 2. Handle TEST / CI mode (no DB)
+	// 🔹 CI / test mode (no DB)
 	if config.DB == nil {
 		utils.JSON(w, http.StatusOK, map[string]interface{}{
 			"status": "success",
@@ -172,7 +173,6 @@ func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 🔥 3. Normal DB flow
 	collection := config.DB.Collection("posts")
 
 	cursor, err := collection.Find(context.Background(), bson.M{})
@@ -194,7 +194,7 @@ func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 🔥 4. Cache result (ignore error safely)
+	// 🔹 Cache result (ignore error intentionally)
 	_ = cache.Set("posts", posts, 30*time.Minute)
 
 	utils.JSON(w, http.StatusOK, map[string]interface{}{
@@ -202,7 +202,6 @@ func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 		"data":   posts,
 	})
 }
-
 func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	id := extractID(r)
 
