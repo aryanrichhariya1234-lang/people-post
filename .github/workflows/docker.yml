@@ -30,16 +30,16 @@ jobs:
 
       # 5. Build backend image
       - name: Build backend image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/peoplepost-backend ./peoplepost
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/people-post-backend ./peoplepost
 
       # 6. Push backend image
       - name: Push backend image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/peoplepost-backend
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/people-post-backend
 
       # 7. Build frontend image
       - name: Build frontend image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/peoplepost-frontend ./peoplepostF
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/people-post-frontend ./peoplepostF
 
       # 8. Push frontend image
       - name: Push frontend image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/peoplepost-frontend
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/people-post-frontend
